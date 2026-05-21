@@ -1,4 +1,4 @@
-# The Linear Session Abstract Machine (Artefact)
+# The Linear Session Abstract Machine (Artifact)
 
 This document describes the artifact for the Linear Session Abstrtact Machine as presented in TOPLAS "The Linear Session Abstract Machine" (follow up of "The Session Abstract Machine" at ESOP24). The artifact consists of a type checker and a proof-of-concept implementation for the Linear Session Abstract Machine (SAM), as an alternative backend to the CLASS language prototype. The artifact is currently distributed as a zip archive that bundles the jvm code, the examples from the papers, and many other examples that showcase the abstract machine. 
 
