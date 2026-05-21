@@ -1,0 +1,95 @@
+type corec IntStream {
+       offer of   {
+     	   | #next: send !lint; IntStream
+	       | #stop: close
+ 	   }	   	   
+ };;
+ 
+type NextIntStream {
+	send !lint; IntStream
+};;
+
+proc rec integersfrom(n: IntStream; k:~lint)
+{
+    case n of {
+      	|	#next: n <- k; integersfrom(n;k+1)
+	 	|	#stop: close n
+ 	}	   	   
+ };;
+
+proc unsafe_rec node(fouts:IntStream, fins:~IntStream; n:~lint) {
+	case fouts of {
+		|#next:
+			node_next(fouts, fins; n)
+		|#stop:
+			#stop fins; wait fins; close fouts
+	}
+} and node_next(fouts:NextIntStream, fins:~IntStream; n:~lint) {
+	#next fins;
+	fins -> v;
+	if (v % n == 0) {
+		node_next(fouts, fins; n)
+	} else {
+		fouts <- v;
+		node(fouts, fins; n)
+	}
+};;
+
+proc unsafe_rec link(souts:IntStream, sins:~IntStream)
+ {
+      case souts of { 
+  	  	|#next:  
+			#next sins;
+      		recv sins (p);
+  	  	    send souts(p);
+		    cut  {
+		       	link(souts,outp)
+		      		|outp:IntStream|
+		      	node(outp,sins;p)
+		    }
+		|#stop:
+			#stop sins; wait sins; close souts
+	}
+ };;
+
+proc primeStream(primes:IntStream) { 
+	letc n:IntStream {
+      integersfrom(n;2)
+	};
+    link(primes,n)
+};;
+
+proc unsafe_rec printfirstN(il:~IntStream;k:~lint)
+{
+   if(k==0) {
+	  #stop il; wait il; println(" STOP.");()
+	 }
+   {
+	 #next il; recv il(n);
+	 printfirstN(il;k-1)
+   }
+};;
+
+proc main(;np:colint)
+{
+    cut { primeStream(primes)
+	| primes:~IntStream|
+    printfirstN(primes;np)
+	}
+ };;
+
+proc mainc(;np:colint)
+{
+    ccut { primeStream(primes)
+	| primes:~IntStream|
+    printfirstN(primes;np)
+	}
+ };;
+
+// main(;100);;
+// main(;200);;
+// main(;300);;
+// main(;400);;
+// main(;420);;
+// main(;430);;
+// main(;450);;

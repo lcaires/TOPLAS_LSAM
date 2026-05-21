@@ -1,0 +1,6 @@
+include "pipe.clls";;
+
+println("sam 4 main(;500)");();;
+sam 4 main(;500);;
+println("repeat 4 main(;500)");();;
+sam 4 mainc(;500);;

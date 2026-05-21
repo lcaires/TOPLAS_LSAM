@@ -1,0 +1,104 @@
+include "ackermann-sam.clls";;
+
+proc ack43(r:Nat) {
+  cut {
+    six(n)
+    |n:~Nat|
+    three(m)
+    |m:~Nat|
+    acker(m,n,r)
+    }
+};;
+
+type Future(A) {
+    send A;close
+};;
+
+proc unsafe_rec loadp(r:Future(Nat);x:~lint)
+{
+    if (x==0) {
+        letc n:Nat { #Z n; close n };
+        r <- n; close r
+    } else {
+        letc f1:Future(Nat) { loadp(f1;x-1) };
+        f1 -> r1;
+        wait f1;
+        letc r2:Nat { ack43(r2) };
+        letc r3:Nat { add(r1,r2,r3) };
+        send r(r3); close r
+    }
+};; 
+
+proc worker(c:Future(lint);n:~lint,k:~lint) {
+    letc r:Future(Nat) { loadp(r;k) };
+    r -> n;
+    wait r;
+    letc v:lint { tolint(n,v) };
+    c <- v; 
+    close c
+};;
+
+proc unsafe_rec testP0(;n:~lint,t:~lint){
+    if (n==0) {
+        ()
+    } else {
+        par {  cut { worker(c;n,t)  |c:~Future(lint)| 
+               c -> m; println(m); wait c;() } 
+               || testP0(;n-1,t) }
+    }
+};;
+
+proc unsafe_rec testC1(last:~Future(lint);n:~lint,t:~lint){
+    if (n==0) {
+        last -> v;
+        println (v);
+        wait last;
+        ()
+    } else {
+         ccut { letc c:Future(lint) { worker(c;n,t) };
+                c -> m; 
+                wait c;
+                last -> vlast;
+                f1 <- m+vlast;
+                wait last;
+                close f1
+            |f1:~Future(lint) |
+                testC1(f1;n-1,t)
+        }
+    }
+};;
+
+
+proc unsafe_rec testP1(last:~Future(lint);n:~lint,t:~lint){
+    if (n==0) {
+        last -> v;
+        println (v);
+        wait last;
+        ()
+    } else {
+         cut {  letc c:Future(lint) { worker(c;n,t) };
+                c -> m; 
+                wait c;
+                last -> vlast;
+                f1 <- m+vlast;
+                wait last;
+                close f1
+            |f1:~Future(lint) |
+                testP1(f1;n-1,t)
+        }
+    }
+};;
+
+proc testC1M(;n:~lint,t:~lint) {
+    ccut { f0 <- 0; close f0 |f0:~Future(lint)|  testC1(f0;n,t) }
+};;
+
+proc testP1M(;n:~lint,t:~lint) {
+    letc f0:Future(lint) { f0 <- 0; close f0};
+    testP1(f0;n,t)
+};;
+
+println("Running: sam testP1M(;8,2);;");();;
+sam 6 testP1M(;8,2);;
+println("Running: sam testC1M(;8,2);;");();;
+sam 6 testC1M(;8,2);;

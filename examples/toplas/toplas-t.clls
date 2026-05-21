@@ -1,0 +1,7 @@
+include "Bench-systemF-t.clls";;
+include "Bench-bitcounter-t.clls";;
+include "Bench-ackermann-t.clls";;
+include "Bench-primes-t.clls";;
+include "Bench-life50-t.clls";;
+include "Bench-life100-t.clls";;
+include "Bench-workers-t.clls";;

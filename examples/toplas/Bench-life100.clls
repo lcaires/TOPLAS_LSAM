@@ -1,0 +1,4 @@
+include "life.clls";;
+
+println("sam 6 main0(life100.in)");();;
+sam 6 main0("examples/toplas/life100.in");;

@@ -1,0 +1,4 @@
+include "ackermann-sam.clls";;
+
+println("sam 6 test0()");();;
+sam 6 test0();;

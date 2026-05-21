@@ -1,0 +1,4 @@
+include "life.clls";;
+
+println("repeat 6 main0()");();;
+repeat 6 main0("examples/toplas/life50.in");;

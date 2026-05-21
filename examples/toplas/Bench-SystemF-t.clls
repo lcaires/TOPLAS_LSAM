@@ -1,0 +1,3 @@
+include "recursion-for-free.clls";;
+
+repeat 6 testEXP2();;

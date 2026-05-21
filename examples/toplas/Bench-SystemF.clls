@@ -1,0 +1,3 @@
+include "recursion-for-free.clls";;
+
+sam 6 testEXP2();;

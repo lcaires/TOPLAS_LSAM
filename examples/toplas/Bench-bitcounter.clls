@@ -1,0 +1,4 @@
+include "bit-counter-sam.clls";;
+
+println("sam test_n(;4096)");();;
+sam 6 test_n(;4096);;
